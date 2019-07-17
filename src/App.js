@@ -16,16 +16,18 @@ class App extends Component {
       {
         id: 3,
         content: "add states and give it some fake todos",
-        checked: false
+        checked: true
       },
       { id: 4, content: "build logic to add/delete/mark todos", checked: false }
-    ]
+    ],
+    showActive: false,
+    showCompleted: false
   };
 
   deleteTodo = id => {
     console.log("deleted");
     console.log(id);
-    let todoList = this.state.todoList.filter(todo => {
+    const todoList = this.state.todoList.filter(todo => {
       return todo.id !== id;
     });
     this.setState({
@@ -35,7 +37,8 @@ class App extends Component {
 
   addTodo = todo => {
     todo.id = Math.random();
-    let todoList = [...this.state.todoList, todo];
+    todo.checked = false;
+    const todoList = [...this.state.todoList, todo];
     this.setState({
       todoList
     });
@@ -43,29 +46,47 @@ class App extends Component {
 
   markTodo = id => {
     console.log(id);
-
-    let todoList = [...this.state.todoList];
-    todoList.map(todo => (todo.id === id ? (todo.checked = true) : null));
-
+    const todoList = [...this.state.todoList];
+    todoList.map(todo => {
+      if (todo.id === id) todo.checked = !todo.checked;
+    });
     this.setState({
       todoList
     });
   };
 
   showActive = () => {
-    let todoList = this.state.todoList.filter(todo => todo.checked !== true);
-    console.log("show active");
     this.setState({
-      todoList
+      showActive: true,
+      showCompleted: false
     });
+    console.log("show active");
+  };
+
+  showCompleted = () => {
+    this.setState({
+      showCompleted: true,
+      showActive: false
+    });
+    console.log("show completed");
   };
 
   showAll = () => {
-    let todoList = [...this.state.todoList];
+    this.setState({
+      showActive: false,
+      showCompleted: false
+    });
     console.log("show all");
+  };
+
+  clearCompleted = () => {
+    const todoList = [...this.state.todoList].filter(
+      todo => todo.checked !== true
+    );
     this.setState({
       todoList
     });
+    console.log("clear completed");
   };
 
   render() {
@@ -77,12 +98,16 @@ class App extends Component {
           todoList={this.state.todoList}
           deleteTodo={this.deleteTodo}
           markTodo={this.markTodo}
+          showActive={this.state.showActive}
+          showCompleted={this.state.showCompleted}
         />
         {this.state.todoList.length ? (
           <Footer
             todoList={this.state.todoList}
             showActive={this.showActive}
             showAll={this.showAll}
+            showCompleted={this.showCompleted}
+            clearCompleted={this.clearCompleted}
           />
         ) : null}
       </div>

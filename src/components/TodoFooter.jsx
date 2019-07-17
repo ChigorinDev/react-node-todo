@@ -1,7 +1,12 @@
 import React, { Component } from "react";
 
-const Footer = ({ todoList, showActive, showAll }) => {
-  console.log(todoList);
+const Footer = ({
+  todoList,
+  showActive,
+  showAll,
+  showCompleted,
+  clearCompleted
+}) => {
   return (
     <div className="todos-footer">
       <div className="todos-count grey-text">
@@ -15,10 +20,14 @@ const Footer = ({ todoList, showActive, showAll }) => {
         <span onClick={() => showActive()} className="filter-btn">
           Active
         </span>
-        <span className="filter-btn">Completed</span>
+        <span onClick={() => showCompleted()} className="filter-btn">
+          Completed
+        </span>
       </div>
       <div className="todos-clear grey-text text-darken-2">
-        <span className="filter-btn">Clear Completed</span>
+        <span onClick={() => clearCompleted()} className="filter-btn">
+          Clear Completed
+        </span>
       </div>
     </div>
   );
