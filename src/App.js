@@ -1,31 +1,31 @@
-import React, { Component } from "react";
-import "./App.css";
-import Todos from "./components/Todos";
-import AddTodo from "./components/AddForm";
-import Footer from "./components/TodoFooter";
+import React, { Component } from 'react';
+import './App.css';
+import Todos from './components/Todos';
+import AddTodo from './components/AddForm';
+import Footer from './components/TodoFooter';
 
 class App extends Component {
   state = {
     todoList: [
       {
         id: 1,
-        content: "Set up basic structure of Reactjs ToDo",
+        content: 'Set up basic structure of Reactjs ToDo',
         checked: true
       },
-      { id: 2, content: "Add some HTML and styles", checked: true },
+      { id: 2, content: 'Add some HTML and styles', checked: true },
       {
         id: 3,
-        content: "add states and give it some fake todos",
+        content: 'add states and give it some fake todos',
         checked: true
       },
-      { id: 4, content: "build logic to add/delete/mark todos", checked: false }
+      { id: 4, content: 'build logic to add/delete/mark todos', checked: false }
     ],
     showActive: false,
     showCompleted: false
   };
 
   deleteTodo = id => {
-    console.log("deleted");
+    console.log('deleted');
     console.log(id);
     const todoList = this.state.todoList.filter(todo => {
       return todo.id !== id;
@@ -60,7 +60,7 @@ class App extends Component {
       showActive: true,
       showCompleted: false
     });
-    console.log("show active");
+    console.log('show active');
   };
 
   showCompleted = () => {
@@ -68,7 +68,7 @@ class App extends Component {
       showCompleted: true,
       showActive: false
     });
-    console.log("show completed");
+    console.log('show completed');
   };
 
   showAll = () => {
@@ -76,7 +76,7 @@ class App extends Component {
       showActive: false,
       showCompleted: false
     });
-    console.log("show all");
+    console.log('show all');
   };
 
   clearCompleted = () => {
@@ -86,7 +86,7 @@ class App extends Component {
     this.setState({
       todoList
     });
-    console.log("clear completed");
+    console.log('clear completed');
   };
 
   render() {
