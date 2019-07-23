@@ -2,53 +2,82 @@ import React, { Component } from 'react';
 import './App.css';
 import Todos from './components/Todos';
 import AddTodo from './components/AddForm';
+import Navigation from './components/Navigation';
 import Footer from './components/TodoFooter';
+import Axios from 'axios';
+
+require('dotenv').config();
 
 class App extends Component {
   state = {
-    todoList: [
-      {
-        id: 1,
-        content: 'Set up basic structure of Reactjs ToDo',
-        checked: true
-      },
-      { id: 2, content: 'Add some HTML and styles', checked: true },
-      {
-        id: 3,
-        content: 'add states and give it some fake todos',
-        checked: true
-      },
-      { id: 4, content: 'build logic to add/delete/mark todos', checked: false }
-    ],
+    todoList: [],
     showActive: false,
     showCompleted: false
   };
 
-  deleteTodo = id => {
+  async componentDidMount() {
+    const { data } = await Axios.get(`${process.env.REACT_APP_API}/todos`);
+    this.setState({
+      todoList: data
+    });
+  }
+
+  deleteTodo = async id => {
     console.log('deleted');
-    console.log(id);
+    const todo_ids = [...this.state.todoList]
+      .filter(todo => todo.id === id)
+      .map(todo => 'id=' + todo.id)
+      .join('&');
+    // await Axios.delete(`http://localhost:4040/todo/${id}`);
+    await Axios.delete(`http://localhost:4040/todo?${todo_ids}`);
     const todoList = this.state.todoList.filter(todo => {
       return todo.id !== id;
     });
+
     this.setState({
       todoList
     });
   };
 
-  addTodo = todo => {
-    todo.id = Math.random();
+  clearCompleted = async () => {
+    const todo_ids = [...this.state.todoList]
+      .filter(todo => todo.checked === true)
+      .map(todo => 'id=' + todo.id)
+      .join('&');
+
+    await Axios.delete(`http://localhost:4040/todo?${todo_ids}`);
+
+    const todoList = [...this.state.todoList].filter(
+      todo => todo.checked !== true
+    );
+
+    this.setState({
+      todoList
+    });
+    console.log('clear completed');
+  };
+
+  addTodo = async todo => {
     todo.checked = false;
-    const todoList = [...this.state.todoList, todo];
+    const { data } = await Axios.post('http://localhost:4040/todo/add', todo);
+    console.log('response from API POST:' + data);
     this.setState({
-      todoList
+      todoList: data
     });
   };
 
-  markTodo = id => {
+  markTodo = async id => {
     console.log(id);
     const todoList = [...this.state.todoList];
+    const todo = todoList.filter(todo => todo.id === id);
+
+    await Axios.put(`http://localhost:4040/todo/${id}`, todo);
+
     todoList.map(todo => {
-      if (todo.id === id) todo.checked = !todo.checked;
+      if (todo.id === id) {
+        return (todo.checked = !todo.checked);
+      }
+      return todo;
     });
     this.setState({
       todoList
@@ -79,37 +108,30 @@ class App extends Component {
     console.log('show all');
   };
 
-  clearCompleted = () => {
-    const todoList = [...this.state.todoList].filter(
-      todo => todo.checked !== true
-    );
-    this.setState({
-      todoList
-    });
-    console.log('clear completed');
-  };
-
   render() {
     return (
-      <div className="todo-app container">
-        <h1 className="center grey-text text-lighten-1">Amazing Todo List</h1>
-        <AddTodo addTodo={this.addTodo} />
-        <Todos
-          todoList={this.state.todoList}
-          deleteTodo={this.deleteTodo}
-          markTodo={this.markTodo}
-          showActive={this.state.showActive}
-          showCompleted={this.state.showCompleted}
-        />
-        {this.state.todoList.length ? (
-          <Footer
+      <div className="container-fluid">
+        <Navigation />
+        <div className="todo-app container">
+          <h1 className="center grey-text text-lighten-1">Amazing Todo List</h1>
+          <AddTodo addTodo={this.addTodo} />
+          <Todos
             todoList={this.state.todoList}
-            showActive={this.showActive}
-            showAll={this.showAll}
-            showCompleted={this.showCompleted}
-            clearCompleted={this.clearCompleted}
+            deleteTodo={this.deleteTodo}
+            markTodo={this.markTodo}
+            showActive={this.state.showActive}
+            showCompleted={this.state.showCompleted}
           />
-        ) : null}
+          {this.state.todoList.length ? (
+            <Footer
+              todoList={this.state.todoList}
+              showActive={this.showActive}
+              showAll={this.showAll}
+              showCompleted={this.showCompleted}
+              clearCompleted={this.clearCompleted}
+            />
+          ) : null}
+        </div>
       </div>
     );
   }

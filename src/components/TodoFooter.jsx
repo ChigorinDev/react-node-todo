@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from 'react';
 
 const Footer = ({
   todoList,
@@ -11,7 +11,7 @@ const Footer = ({
     <div className="todos-footer">
       <div className="todos-count grey-text">
         <span>{todoList.length}</span>
-        <span>{todoList.length > 1 ? "items left" : "item left"}</span>
+        <span>{todoList.length > 1 ? 'items left' : 'item left'}</span>
       </div>
       <div className="todo-filters grey-text text-darken-2">
         <span onClick={() => showAll()} className="filter-btn">
