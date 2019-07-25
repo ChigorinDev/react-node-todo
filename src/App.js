@@ -4,6 +4,7 @@ import Todos from './components/Todos';
 import AddTodo from './components/AddForm';
 import Navigation from './components/Navigation';
 import Footer from './components/TodoFooter';
+import RegistrationForm from './components/RegForm';
 import Axios from 'axios';
 
 require('dotenv').config();
@@ -132,6 +133,8 @@ class App extends Component {
             />
           ) : null}
         </div>
+
+        <RegistrationForm />
       </div>
     );
   }
